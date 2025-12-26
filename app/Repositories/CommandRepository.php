@@ -17,5 +17,14 @@ class CommandRepository
     {
         return Command::where('command', $command)->first();
     }
+
+    public function getListCommands()
+    {
+        return Command::where('type', 'list')
+            ->whereNotNull('target_table')
+            ->whereNotNull('target_column')
+            ->get();
+    }
+
 }
 

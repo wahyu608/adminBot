@@ -19,6 +19,8 @@ class DosensTable
                     ->disk('cloudinary'),
                 TextColumn::make('name')
                     ->searchable(),
+                TextColumn::make('slug')
+                    ->searchable(),
                 TextColumn::make('nidn')
                     ->searchable(),
                 TextColumn::make('email')

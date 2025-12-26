@@ -10,6 +10,7 @@ class Staf extends Model
 
     protected $fillable = [
         'name',
+        'slug',
         'email',
         'phone_number',
         'position',

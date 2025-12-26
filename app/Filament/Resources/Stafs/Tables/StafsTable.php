@@ -9,6 +9,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\{TextColumn,ImageColumn};
 use Filament\Tables\Table;
 
+
 class StafsTable
 {
     public static function configure(Table $table): Table
@@ -19,6 +20,8 @@ class StafsTable
                     ->circular()
                     ->disk('cloudinary'),
                 TextColumn::make('name')
+                    ->searchable(),
+                TextColumn::make('slug')
                     ->searchable(),
                 TextColumn::make('email')
                     ->label('Email address')

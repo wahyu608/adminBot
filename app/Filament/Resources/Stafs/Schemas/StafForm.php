@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Stafs\Schemas;
 
 use Filament\Forms\Components\{FileUpload,Textarea,TextInput};
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class StafForm
 {
@@ -12,7 +13,14 @@ class StafForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->required(),
+                    ->required()
+                    ->live(onBlur: true) 
+                    ->afterStateUpdated(function ( $set, $state) { $set('slug', Str::slug($state, '_')); }),
+                TextInput::make('slug')
+                    ->required()
+                    ->unique(ignoreRecord: true) 
+                    ->disabled() 
+                    ->dehydrated(), 
                 TextInput::make('email')
                     ->label('Email address')
                     ->email()

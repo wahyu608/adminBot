@@ -7,6 +7,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
 use Cloudinary\Cloudinary;
 use Illuminate\Support\Str;
+use Filament\Forms\Set;
+
 
 class DosenForm
 {
@@ -15,7 +17,14 @@ class DosenForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->required(),
+                    ->required()
+                    ->live(onBlur: true) 
+                    ->afterStateUpdated(function ( $set, $state) { $set('slug', Str::slug($state, '_')); }),
+                TextInput::make('slug')
+                    ->required()
+                    ->unique(ignoreRecord: true) 
+                    ->disabled() 
+                    ->dehydrated(), 
                 TextInput::make('nidn')
                     ->default(null),
                 TextInput::make('email')
