@@ -41,24 +41,61 @@ class CommandService implements CommandServiceInterface
         [$prefix, $sub] = $this->parseCommand($command);
 
         $cmd = $this->repository->findByCommand($prefix);
-        if (!$cmd) {
-            abort(404, 'Command not found');
-        }
-
-        if ($sub) {
-            if ($cmd->type !== 'list') {
-                abort(400, "Command {$cmd->command} tidak mendukung sub-command");
+        
+        if ($cmd) {
+            if ($sub) {
+                if ($cmd->type !== 'list') {
+                    abort(400, "Command {$cmd->command} tidak mendukung sub-command");
+                }
+                return $this->handleDetail($cmd, $sub);
             }
 
-            return $this->handleDetail($cmd, $sub);
+            return match ($cmd->type) {
+                'list' => $this->handleList($cmd),
+                'text' => $this->handleText($cmd),
+                default => abort(400, 'Unknown command type')
+            };
         }
 
-        return match ($cmd->type) {
-            'list' => $this->handleList($cmd),
-            'text' => $this->handleText($cmd),
-            default => abort(400, 'Unknown command type')
-        };
+        foreach ($this->repository->getListCommands() as $listCmd) {
+            $result = $this->tryResolveDetail($listCmd, $prefix);
+            if ($result) {
+                return $result;
+            }
+        }
+
+        abort(404, 'Command not found');
     }
+
+    private function tryResolveDetail(Command $cmd, string $slug): ?array
+    {
+        $column = $cmd->target_column;
+
+        $row = DB::table($cmd->target_table)
+            ->where($column, $slug)
+            ->first();
+
+        if (!$row) {
+            return null;
+        }
+
+        $textFields = collect($cmd->fields)
+            ->reject(fn ($f) => $f === 'photo')
+            ->values()
+            ->toArray();
+
+        return [
+            'type' => 'detail',
+            'title' => $slug,
+            'photo' => $row->photo
+                ? Storage::disk('cloudinary')->url($row->photo)
+                : null,
+            'data' => collect($row)->only($textFields)->toArray(),
+            'fields' => $textFields,
+            'response' => $cmd->response,
+        ];
+    }
+
 
     private function parseCommand(string $command): array
     {
