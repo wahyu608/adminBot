@@ -33,52 +33,54 @@ class CommandService implements CommandServiceInterface
     }
 
     private function executeInternal(string $command)
-    {   
-        Log::info('EXECUTE INTERNAL HIT', [
-            'command' => $command,
-        ]);
+    {
+        Log::info('EXECUTE INTERNAL HIT', ['command' => $command]);
 
         [$prefix, $sub] = $this->parseCommand($command);
 
-        $cmd = $this->repository->findByCommand($prefix);
-        
-        if ($cmd) {
-            if ($sub) {
-                if ($cmd->type !== 'list') {
-                    abort(400, "Command {$cmd->command} tidak mendukung sub-command");
-                }
-                return $this->handleDetail($cmd, $sub);
-            }
-
-            return match ($cmd->type) {
-                'list' => $this->handleList($cmd),
-                'text' => $this->handleText($cmd),
-                default => abort(400, 'Unknown command type')
-            };
+        // direct command
+        if ($cmd = $this->repository->findByCommand($prefix)) {
+            return $this->executeCommand($cmd, $sub);
         }
 
-        foreach ($this->repository->getListCommands() as $listCmd) {
-            $result = $this->tryResolveDetail($listCmd, $prefix);
-            if ($result) {
-                return $result;
-            }
+        // sebagai slug detail
+        if ($detail = $this->resolveDetailBySlug($prefix)) {
+            return $detail;
         }
 
         abort(404, 'Command not found');
     }
 
-    private function tryResolveDetail(Command $cmd, string $slug): ?array
+    private function executeCommand(Command $cmd, ?string $sub)
     {
-        $column = $cmd->target_column;
-
-        $row = DB::table($cmd->target_table)
-            ->where($column, $slug)
-            ->first();
-
-        if (!$row) {
-            return null;
+        if ($sub) {
+            abort(400, "Command {$cmd->command} tidak mendukung sub-command");
         }
 
+        return match ($cmd->type) {
+            'list' => $this->handleList($cmd),
+            'text' => $this->handleText($cmd),
+            default => abort(400, 'Unknown command type')
+        };
+    }
+
+    private function resolveDetailBySlug(string $slug): ?array
+    {
+        foreach ($this->repository->getListCommands() as $cmd) {
+            $row = DB::table($cmd->target_table)
+                ->where($cmd->target_column, $slug)
+                ->first();
+
+            if ($row) {
+                return $this->formatDetailResponse($cmd, $row, $slug);
+            }
+        }
+
+        return null;
+    }
+
+    private function formatDetailResponse(Command $cmd, object $row, string $slug): array
+    {
         $textFields = collect($cmd->fields)
             ->reject(fn ($f) => $f === 'photo')
             ->values()
@@ -96,7 +98,6 @@ class CommandService implements CommandServiceInterface
         ];
     }
 
-
     private function parseCommand(string $command): array
     {
         $parts = explode('/', ltrim($command, '/'));
@@ -105,15 +106,13 @@ class CommandService implements CommandServiceInterface
 
     private function handleList(Command $cmd)
     {
-        $column = $cmd->target_column ?? 'name';
-
         $rows = DB::table($cmd->target_table)
-            ->select($column)
+            ->select(['slug', $cmd->target_column])
             ->get();
 
         $commands = $rows->map(fn ($row) => [
-            'command' => '/' . strtolower(str_replace(' ', '_', $row->$column)),
-            'description' => $row->$column,
+            'command' => '/' . $row->slug,
+            'description' => $row->{$cmd->target_column},
         ]);
 
         return [
@@ -122,43 +121,6 @@ class CommandService implements CommandServiceInterface
             'commands' => $commands,
         ];
     }
-
-    private function handleDetail(Command $cmd, string $sub)
-    {
-       
-        if (!$cmd->target_table || !$cmd->target_column) {
-        abort(500, 'Command belum dikonfigurasi dengan benar (target_table / target_column kosong)');
-    }
-
-        $column = $cmd->target_column ?? 'name';
-        $name = strtolower(str_replace('_', ' ', $sub));
-
-        $row = DB::table($cmd->target_table)
-            ->whereRaw("LOWER($column) = ?", [$name])
-            ->first();
-
-        if (!$row) {
-            abort(404, "$name not found");
-        }
-
-        $textFields = collect($cmd->fields)
-            ->reject(fn ($f) => $f === 'photo')
-            ->values()
-            ->toArray();
-
-        return [
-            'type' => 'detail',
-            'title' => $name,
-            'photo' => $row->photo
-                ? Storage::disk('cloudinary')->url($row->photo) : null,
-            'data' => collect($row)
-                ->only($textFields)
-                ->toArray(),
-            'fields' => $textFields,
-            'response' => $cmd->response,
-        ];
-    }
-
 
     private function handleText(Command $cmd)
     {
