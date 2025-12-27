@@ -4,9 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Contracts\{CommandResolveServiceInterface,CommandServiceInterface};
-use App\Contracts\Repositories\CommandRepositoryInterface;
 Use App\Repositories\CommandRepository;
-use App\Services\Command\{CommandResolveService,CommandService};
+use App\Services\Command\CommandService;
 
 
 
