@@ -3,7 +3,8 @@
 namespace App\Filament\Resources\Commands\Schemas;
 
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\{TextInput,Toggle,Select,MultiSelect,TextArea};
+use Filament\Forms\Components\{TextInput,Toggle,Select,MultiSelect};
+use Filament\Forms\Components\Textarea;
 use App\Helpers\ModelHelper;
 use Illuminate\Support\Facades\Schema as SchemaHelper;
 
