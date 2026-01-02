@@ -14,6 +14,7 @@ class CommandsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->deferLoading()
             ->columns([
                 TextColumn::make('command'),
                 TextColumn::make('description'),
