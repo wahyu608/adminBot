@@ -31,7 +31,6 @@ class AdminPanelProvider extends PanelProvider
             ->globalSearch(false)
             ->login()
             ->emailVerification()
-            ->spa()
             ->brandName('Selamat Datang Admin')
             ->colors([
                 'primary' => Color::Amber,
