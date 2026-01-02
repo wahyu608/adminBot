@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->globalSearch(false)
             ->login()
+            ->emailVerification()
             ->spa()
             ->brandName('Selamat Datang Admin')
             ->colors([
