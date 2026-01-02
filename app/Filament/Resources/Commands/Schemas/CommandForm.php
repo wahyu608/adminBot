@@ -3,8 +3,7 @@
 namespace App\Filament\Resources\Commands\Schemas;
 
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\{TextInput,Toggle,Select,MultiSelect};
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\{TextInput,Toggle,Select,MultiSelect,Textarea};
 use App\Helpers\ModelHelper;
 use Illuminate\Support\Facades\Schema as SchemaHelper;
 
@@ -20,7 +19,7 @@ class CommandForm
                     ->required(),
                 TextInput::make('description')
                     ->required(),
-                TextArea::make('response'),
+                Textarea::make('response'),
                 Select::make('type')
                     ->options([
                         'text' => 'Text',
