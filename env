@@ -2,9 +2,9 @@ APP_NAME=Laravel
 APP_ENV=local
 APP_KEY=base64:ZBEXwHgyVK0xWNYiUoxXr82INFZn3wZCegdeNK3l05Q=
 APP_DEBUG=true
-APP_URL=http://127.0.0.1:8000
+APP_URL=APP_URL=https://admin-bot-tau.vercel.app
 BOT_API_KEY=supersecretkey123
-TELEGRAM_BOT_URL=http://localhost:3000
+TELEGRAM_BOT_URL=http://emilbot.vercel.app
  
 CLOUDINARY_URL=cloudinary://439575322895411:r95in8hQZda_sc5lu5fPR8vJNME@duefrax43
 CLOUDINARY_CLOUD_NAME=duefrax43
