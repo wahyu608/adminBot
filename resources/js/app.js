@@ -17,7 +17,7 @@ if (userId) {
         });
     
     window.Echo.connector.pusher.connection.bind('connected', function() {
-        console.log('Reverb Connected');
+        console.log('Pusher Connected');
         new FilamentNotification()
             .title('Online')
             .body('Status saat ini online')
@@ -27,7 +27,7 @@ if (userId) {
     });
     
     window.Echo.connector.pusher.connection.bind('disconnected', function() {
-        console.log('Reverb Disconnected');
+        console.log('Pusher Disconnected');
         new FilamentNotification()
             .title('Koneksi buruk')
             .body('koneksi internet buruk')
