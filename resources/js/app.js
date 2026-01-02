@@ -76,21 +76,21 @@ if (userId) {
         });
 
     // Koneksi Pusher
-    window.Echo.connector.pusher.connection.bind('connected', function() {
-        console.log('Pusher Connected');
-        pushNotification({
-            status: 'success',
-            message: 'Status saat ini online'
-        });
-    });
+    // window.Echo.connector.pusher.connection.bind('connected', function() {
+    //     console.log('Pusher Connected');
+    //     pushNotification({
+    //         status: 'success',
+    //         message: 'Status saat ini online'
+    //     });
+    // });
 
-    window.Echo.connector.pusher.connection.bind('disconnected', function() {
-        console.log('Pusher Disconnected');
-        pushNotification({
-            status: 'failed',
-            message: 'Koneksi internet buruk'
-        });
-    });
+    // window.Echo.connector.pusher.connection.bind('disconnected', function() {
+    //     console.log('Pusher Disconnected');
+    //     pushNotification({
+    //         status: 'failed',
+    //         message: 'Koneksi internet buruk'
+    //     });
+    // });
 
     console.log(`Listening on channel: user.${userId}`);
 } else {
