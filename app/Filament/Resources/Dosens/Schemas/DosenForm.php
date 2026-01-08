@@ -2,48 +2,80 @@
 
 namespace App\Filament\Resources\Dosens\Schemas;
 
-use Filament\Forms\Components\{FileUpload,TextInput};
-use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
-use Cloudinary\Cloudinary;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\{
+    TextInput,
+    Textarea,
+    FileUpload
+};
 use Illuminate\Support\Str;
-use Filament\Forms\Set;
-
 
 class DosenForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('name')
-                    ->required()
-                    ->live(onBlur: true) 
-                    ->afterStateUpdated(function ( $set, $state) { $set('slug', Str::slug($state, '_')); }),
-                TextInput::make('slug')
-                    ->required()
-                    ->unique(ignoreRecord: true) 
-                    ->disabled() 
-                    ->dehydrated(), 
-                TextInput::make('nidn')
-                    ->default(null),
-                TextInput::make('email')
-                    ->label('Email address')
-                    ->email()
-                    ->default(null),
-                TextInput::make('phone_number')
-                    ->default(null),
-                TextInput::make('position')
-                    ->default(null),
-                TextInput::make('study_program')
-                    ->default(null),
-                Textarea::make('description')
-                    ->default(null)
-                    ->columnSpanFull(),
-                FileUpload::make('photo')
-                    ->disk('cloudinary')
-                    ->directory('emillia')
-                    ->image(),
-            ]);
+        return $schema->components([
+            Section::make('Identitas Dosen')
+                ->description('Informasi utama dan identitas unik dosen')
+                ->columns(2)
+                ->schema([
+
+                    TextInput::make('name')
+                        ->label('Nama Dosen')
+                        ->required()
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(
+                            fn (callable $set, $state) =>
+                                $set('slug', Str::slug($state, '_')),
+                        ),
+
+                    TextInput::make('slug')
+                        ->label('Slug')
+                        ->disabled()
+                        ->dehydrated(true),
+
+                    TextInput::make('nidn')
+                        ->label('NIDN')
+                        ->numeric()
+                        ->unique(ignoreRecord: true),
+
+                    TextInput::make('position')
+                        ->label('Jabatan'),
+
+                    TextInput::make('study_program')
+                        ->label('Program Studi'),
+                ]),
+
+            Section::make('Kontak & Profil')
+                ->columns(2)
+                ->schema([
+
+                    TextInput::make('email')
+                        ->label('Email')
+                        ->email()
+                        ->unique(ignoreRecord: true),
+
+                    TextInput::make('phone_number')
+                        ->label('Nomor Telepon'),
+
+                    Textarea::make('description')
+                        ->label('Deskripsi Dosen')
+                        ->helperText('Deskripsi singkat untuk profil atau informasi tambahan')
+                        ->columnSpanFull(),
+                ]),
+
+            Section::make('Media')
+                ->schema([
+
+                    FileUpload::make('photo')
+                        ->label('Foto Dosen')
+                        ->disk('cloudinary')
+                        ->directory('dosen')
+                        ->image()
+                        ->imageEditor()
+                        ->helperText('Foto resmi dosen'),
+                ]),
+        ]);
     }
 }

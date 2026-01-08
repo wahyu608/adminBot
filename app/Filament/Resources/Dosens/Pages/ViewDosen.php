@@ -6,7 +6,7 @@ use App\Filament\Resources\Dosens\DosenResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
-class ViewStaf extends ViewRecord
+class ViewDosen extends ViewRecord
 {
     protected static string $resource = DosenResource::class;
 

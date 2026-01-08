@@ -11,6 +11,7 @@ use App\Filament\Resources\Commands\Schemas\CommandInfolist;
 use App\Filament\Resources\Commands\Tables\CommandsTable;
 use App\Models\Command;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -19,10 +20,12 @@ use Filament\Tables\Table;
 class CommandResource extends Resource
 {
     protected static ?string $model = Command::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
     protected static ?string $recordTitleAttribute = 'Perintah';
+    protected static string|UnitEnum|null $navigationGroup = 'Layanan Bot';
+    protected static ?string $navigationLabel = 'Command Bot';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-command-line';
+    protected static ?int $navigationSort = 1;
+
 
     public static function form(Schema $schema): Schema
     {

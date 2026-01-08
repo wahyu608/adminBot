@@ -2,53 +2,82 @@
 
 namespace App\Filament\Resources\Stafs\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\{TextColumn,ImageColumn};
+use Filament\Actions\{
+    BulkActionGroup,
+    DeleteBulkAction,
+    EditAction,
+    ViewAction
+};
+use Filament\Tables\Columns\{
+    ImageColumn,
+    TextColumn
+};
 use Filament\Tables\Table;
-
 
 class StafsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->deferLoading()
             ->columns([
                 ImageColumn::make('photo')
+                    ->label('Foto')
+                    ->disk('cloudinary')
                     ->circular()
-                    ->disk('cloudinary'),
+                    ->size(40)
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
-                TextColumn::make('email')
-                    ->label('Email address')
-                    ->searchable(),
-                TextColumn::make('phone_number')
-                    ->searchable(),
+                    ->label('Nama Staf')
+                    ->searchable()
+                    ->sortable()
+                    ->weight('bold'),
+
                 TextColumn::make('position')
+                    ->label('Jabatan')
                     ->searchable(),
+
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('phone_number')
+                    ->label('No. Telepon')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('slug')
+                    ->label('Slug')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Dibuat')
+                    ->dateTime('d M Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Diubah')
+                    ->dateTime('d M Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+
             ->filters([
-                //
             ])
+
             ->recordActions([
-                ViewAction::make(),
                 EditAction::make(),
+                ViewAction::make(),
             ])
+
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->label('Hapus Terpilih')
+                        ->requiresConfirmation(),
                 ]),
             ]);
     }

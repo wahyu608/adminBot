@@ -11,6 +11,7 @@ use App\Filament\Resources\Stafs\Schemas\StafInfolist;
 use App\Filament\Resources\Stafs\Tables\StafsTable;
 use App\Models\Staf;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -20,7 +21,10 @@ class StafResource extends Resource
 {
     protected static ?string $model = Staf::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|UnitEnum|null $navigationGroup = 'Data Referensi';
+    protected static ?string $navigationLabel = 'Staf';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
     {

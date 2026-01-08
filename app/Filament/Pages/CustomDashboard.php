@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Dashboard as BaseDashboard;
+use App\Filament\Widgets\SystemStats;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Http;
@@ -12,6 +13,12 @@ class CustomDashboard extends BaseDashboard
 {
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-home';
     
+    public function getWidgets(): array
+    {
+        return [
+            SystemStats::class,
+        ];
+    }
     
     protected function getHeaderActions(): array
     {

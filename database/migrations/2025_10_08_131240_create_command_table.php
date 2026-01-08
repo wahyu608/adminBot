@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('command', function (Blueprint $table) {
             $table->id();
-            $table->string('command');
+            $table->string('command')->unique();
             $table->string('description');
             $table->text('response')->nullable();
             $table->enum('type', ['list','text'])->default('text');
