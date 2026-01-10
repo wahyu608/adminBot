@@ -24,7 +24,7 @@ class CustomDashboard extends BaseDashboard
     {
         return [
             Action::make('syncTelegram')
-                ->label('Sync Telegram Commands')
+                ->label('Sinkronisasi Command Telegram')
                 ->icon('heroicon-o-arrow-path')
                 ->color('success')
                 ->requiresConfirmation()
@@ -32,7 +32,7 @@ class CustomDashboard extends BaseDashboard
                     SyncTelegramCommands::dispatch(auth()->id());
 
                     Notification::make()
-                        ->title('🔄 Sinkronisasi dimulai...')
+                        ->title('Sinkronisasi dimulai...')
                         ->body('Status akan update otomatis')
                         ->success()
                         ->send();
