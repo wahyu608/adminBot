@@ -48,6 +48,7 @@
  
         "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "cookie"
+        "SESSION_DRIVER": "cookie",
+        "APP_FACADE_CACHE": "/tmp/facade-cache"
     }
 }

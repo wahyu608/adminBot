@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
+    ->useStoragePath('/tmp') // <- INI KUNCI FIX VERCEL
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
@@ -14,12 +15,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-        'verify.bot' => \App\Http\Middleware\VerifyBotToken::class,
+            'verify.bot' => \App\Http\Middleware\VerifyBotToken::class,
         ]);
+
         $middleware->validateCsrfTokens(except: [
-        'broadcasting/auth',
+            'broadcasting/auth',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->create();
