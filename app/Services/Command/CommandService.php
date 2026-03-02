@@ -90,7 +90,9 @@ class CommandService implements CommandServiceInterface
             'type' => 'detail',
             'title' => $slug,
             'photo' => $row->photo
-                ? Storage::disk('cloudinary')->url($row->photo)
+                ? (str_starts_with($row->photo, 'http')
+                    ? $row->photo
+                    : Storage::disk('cloudinary')->url($row->photo))
                 : null,
             'data' => collect($row)->only($textFields)->toArray(),
             'fields' => $textFields,
