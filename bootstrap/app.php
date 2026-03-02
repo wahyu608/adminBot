@@ -4,8 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
-return Application::configure(basePath: dirname(__DIR__))
-    ->useStoragePath('/tmp') // <- INI KUNCI FIX VERCEL
+$app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
@@ -26,3 +25,17 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->create();
+
+/*
+|--------------------------------------------------------------------------
+| Serverless Storage Override (Vercel)
+|--------------------------------------------------------------------------
+|
+| Di environment serverless seperti Vercel, folder storage default read-only.
+| Kita alihkan ke /tmp yang writable.
+|
+*/
+
+$app->useStoragePath('/tmp');
+
+return $app;
