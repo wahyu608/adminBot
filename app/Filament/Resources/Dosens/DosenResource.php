@@ -53,4 +53,5 @@ class DosenResource extends Resource
             'edit' => EditDosen::route('/{record}/edit'),
         ];
     }
+    
 }

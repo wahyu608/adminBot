@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\CloudinaryHelper;
 
 class Staf extends Model
 {
@@ -17,4 +18,17 @@ class Staf extends Model
         'description',
         'photo',
     ];
+    protected static function booted()
+    {
+        static::deleting(function ($model) {
+        \Log::info('Deleting photo: ' . $model->photo);
+        \App\Helpers\CloudinaryHelper::deleteByUrl($model->photo);
+    });
+
+        static::updating(function ($model) {
+            if ($model->isDirty('photo')) {
+                CloudinaryHelper::deleteByUrl($model->getOriginal('photo'));
+            }
+        });
+    }
 }

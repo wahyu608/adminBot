@@ -5,6 +5,8 @@ namespace App\Filament\Resources\Dosens\Pages;
 use App\Filament\Resources\Dosens\DosenResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use App\Helpers\CloudinaryHelper;
+use Filament\Actions\DeleteAction;
 
 class ListDosens extends ListRecords
 {
@@ -16,4 +18,5 @@ class ListDosens extends ListRecords
             CreateAction::make(),
         ];
     }
+
 }

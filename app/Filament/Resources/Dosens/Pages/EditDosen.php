@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Dosens\Pages;
 use App\Filament\Resources\Dosens\DosenResource;
 use Filament\Actions\{DeleteAction,ViewAction};
 use Filament\Resources\Pages\EditRecord;
+use App\Helpers\CloudinaryHelper;
 
 class EditDosen extends EditRecord
 {
@@ -13,7 +14,14 @@ class EditDosen extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            DeleteAction::make(),
+            DeleteAction::make()
+            ->after(function () {
+                $record = $this->record;
+
+                if ($record && $record->photo) {
+                    CloudinaryHelper::deleteByUrl($record->photo);
+                }
+            }),
         ];
     }
 }

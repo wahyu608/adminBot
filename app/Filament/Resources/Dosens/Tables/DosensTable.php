@@ -13,6 +13,7 @@ use Filament\Tables\Columns\{
     TextColumn
 };
 use Filament\Tables\Table;
+use App\Helpers\CloudinaryHelper;
 
 class DosensTable
 {
@@ -88,6 +89,17 @@ class DosensTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->label('Hapus Terpilih')
+                        ->after(function ($records) {
+                            foreach ($records as $record) {
+                                if (!empty($record->photo)) {
+                                    \Log::info('Bulk deleting photo', [
+                                        'public_id' => $record->photo,
+                                    ]);
+
+                                    CloudinaryHelper::deleteByUrl($record->photo);
+                                }
+                            }
+                        })
                         ->requiresConfirmation(),
                 ]),
             ]);

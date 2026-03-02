@@ -3,20 +3,19 @@
 namespace App\Helpers;
 
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Http\UploadedFile;
+use Cloudinary\Api\Upload\UploadApi;
 
 class CloudinaryHelper
 {
-    /**
-     * Upload file ke Cloudinary
-     *
-     * @param string $filePath
-     * @param string|null $folder
-     * @return string URL secure
-     */
-    public static function upload(string $filePath, ?string $folder = null): string
+    public static function upload($file, ?string $folder = null): string
     {
-        if (!file_exists($filePath)) {
-            throw new \Exception("File tidak ditemukan: $filePath");
+        if ($file instanceof UploadedFile) {
+            $filePath = $file->getRealPath();
+        } elseif (is_string($file) && file_exists($file)) {
+            $filePath = $file;
+        } else {
+            throw new \InvalidArgumentException('File tidak valid untuk upload');
         }
 
         $options = [];
@@ -29,31 +28,39 @@ class CloudinaryHelper
         return $uploaded->getSecurePath();
     }
 
-    /**
-     * Hapus file dari Cloudinary
-     *
-     * @param string $url Cloudinary URL
-     * @return array
-     */
-    public static function deleteByUrl(string $url): array
+    public static function deleteByUrl(?string $url): bool
     {
+        if (!$url) return false;
+
         $publicId = self::getPublicIdFromUrl($url);
-        if (!$publicId) return [];
-        return Cloudinary::destroy($publicId);
+        if (!$publicId) return false;
+
+        $result = (new UploadApi())->destroy($publicId);
+
+        \Log::info('Cloudinary delete result', [
+            'public_id' => $publicId,
+            'response' => $result->getArrayCopy(),
+        ]);
+
+        return ($result['result'] ?? null) === 'ok';
     }
 
-    /**
-     * Ambil public_id dari URL Cloudinary
-     *
-     * @param string $url
-     * @return string|null
-     */
-    public static function getPublicIdFromUrl(string $url): ?string
+    public static function getPublicIdFromUrl(string $value): ?string
     {
-        $path = parse_url($url, PHP_URL_PATH); // /image/upload/v123/folder/file.jpg
-        $parts = explode('/', $path);
-        $filename = end($parts); // file.jpg
-        $publicId = pathinfo($filename, PATHINFO_FILENAME); // file
-        return $publicId ?: null;
+        
+        if (!str_starts_with($value, 'http')) {
+            return preg_replace('/\.[^.]+$/', '', $value);
+        }
+
+        // Jika URL penuh Cloudinary
+        $path = parse_url($value, PHP_URL_PATH);
+        if (!$path) return null;
+
+        $segments = explode('/upload/', $path);
+        if (!isset($segments[1])) return null;
+
+        $publicPath = preg_replace('/^v\d+\//', '', $segments[1]);
+
+        return preg_replace('/\.[^.]+$/', '', $publicPath);
     }
 }
