@@ -23,7 +23,7 @@ class Staf extends Model
         static::deleting(function ($model) {
         \Log::info('Deleting photo: ' . $model->photo);
         \App\Helpers\CloudinaryHelper::deleteByUrl($model->photo);
-    });
+        });
 
         static::updating(function ($model) {
             if ($model->isDirty('photo')) {

@@ -4,10 +4,11 @@ namespace App\Filament\Resources\Dosens\Schemas;
 
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\View;
 use Filament\Forms\Components\{
     TextInput,
     Textarea,
-    FileUpload
+    FileUpload,
 };
 use Illuminate\Support\Str;
 
@@ -67,15 +68,12 @@ class DosenForm
 
             Section::make('Media')
                 ->schema([
-
-                    FileUpload::make('photo')
-                        ->label('Foto Dosen')
-                        ->disk('cloudinary')
-                        ->directory('dosen')
-                        ->image()
-                        ->imageEditor()
-                        ->helperText('Foto resmi dosen'),
-                ]),
+                    TextInput::make('photo')
+                    ->readOnly(),
+                    View::make('filament.forms.photo-preview'),
+                    View::make('filament.forms.cloudinary-upload')
+                        ->visible(fn ($operation) => in_array($operation, ['create', 'edit'])),
+                                    ]),
         ]);
     }
 }

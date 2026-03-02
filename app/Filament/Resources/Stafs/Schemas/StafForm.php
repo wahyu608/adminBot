@@ -57,14 +57,12 @@ class StafForm
                 ]),
             Section::make('Media')
                 ->schema([
-                    FileUpload::make('photo')
-                        ->label('Foto Staf')
-                        ->disk('cloudinary')
-                        ->directory('staf')
-                        ->image()
-                        ->imageEditor()
-                        ->helperText('Foto resmi staf'),
-                ]),
+                    TextInput::make('photo')
+                    ->readOnly(),
+                    View::make('filament.forms.photo-preview'),
+                    View::make('filament.forms.cloudinary-upload')
+                        ->visible(fn ($operation) => in_array($operation, ['create', 'edit'])),
+                                    ]),
         ]);
     }
 }

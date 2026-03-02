@@ -24,4 +24,20 @@ class EditDosen extends EditRecord
             }),
         ];
     }
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('edit', ['record' => $this->record]);
+    }
+    protected function mutateFormDataBeforeSave(array $data): array
+{
+    $oldPhoto = $this->record->photo ?? null;
+    $newPhoto = $data['photo'] ?? null;
+
+   
+    if ($oldPhoto && $newPhoto && $oldPhoto !== $newPhoto) {
+        CloudinaryHelper::deleteByUrl($oldPhoto);
+    }
+
+    return $data;
+}
 }
