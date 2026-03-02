@@ -26,16 +26,22 @@ $app = Application::configure(basePath: dirname(__DIR__))
     })
     ->create();
 
-/*
-|--------------------------------------------------------------------------
-| Serverless Storage Override (Vercel)
-|--------------------------------------------------------------------------
-|
-| Di environment serverless seperti Vercel, folder storage default read-only.
-| Kita alihkan ke /tmp yang writable.
-|
-*/
-
+// Override storage path ke /tmp (writable di Vercel)
 $app->useStoragePath('/tmp');
+
+// Pastikan folder yang dibutuhkan Laravel ada
+$paths = [
+    '/tmp/framework',
+    '/tmp/framework/cache',
+    '/tmp/framework/views',
+    '/tmp/framework/sessions',
+    '/tmp/logs',
+];
+
+foreach ($paths as $path) {
+    if (!is_dir($path)) {
+        mkdir($path, 0777, true);
+    }
+}
 
 return $app;
