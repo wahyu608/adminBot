@@ -109,11 +109,12 @@ class CommandService implements CommandServiceInterface
     private function handleList(Command $cmd)
     {
         $rows = DB::table($cmd->target_table)
-            ->select(['slug', $cmd->target_column])
+            ->select(['slug', 'name', $cmd->target_column])
             ->get();
 
         $commands = $rows->map(fn ($row) => [
             'command' => '/' . $row->slug,
+            'name' => $row->name,
             'description' => $row->{$cmd->target_column},
         ]);
 

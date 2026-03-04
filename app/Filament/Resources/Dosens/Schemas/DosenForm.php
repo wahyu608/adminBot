@@ -10,6 +10,7 @@ use Filament\Forms\Components\{
     Textarea,
     FileUpload,
 };
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
 class DosenForm
@@ -39,7 +40,9 @@ class DosenForm
                     TextInput::make('nidn')
                         ->label('NIDN')
                         ->numeric()
-                        ->unique(ignoreRecord: true),
+                        ->rules(fn ($record) => [
+                            Rule::unique('dosens', 'nidn')->ignore($record?->id)
+                        ]),
 
                     TextInput::make('position')
                         ->label('Jabatan'),

@@ -14,14 +14,12 @@ class VerifyBotToken
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
-    {
-        $authHeader = $request->header('Authorization');
-        $validToken = 'Bearer ' . env('BOT_API_KEY');
-
-        if ($authHeader !== $validToken) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
-        return $next($request);
+   public function handle(Request $request, Closure $next): Response
+{
+    if ($request->bearerToken() !== config('app.bot_api_key')) {
+        return response()->json(['error' => 'Unauthorized'], 403);
     }
+
+    return $next($request);
+}
 }
