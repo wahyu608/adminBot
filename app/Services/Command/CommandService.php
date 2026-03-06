@@ -25,16 +25,15 @@ class CommandService implements CommandServiceInterface
 
     public function execute(string $command)
     {
-        return Cache::remember(
+        $command = strtolower(trim($command, '/'));
+        return Cache::rememberForever(
             "command:$command",
-            300,
             fn () => $this->executeInternal($command)
         );
     }
 
     private function executeInternal(string $command)
     {
-        Log::info('EXECUTE INTERNAL HIT', ['command' => $command]);
 
         [$prefix, $sub] = $this->parseCommand($command);
 
@@ -66,22 +65,30 @@ class CommandService implements CommandServiceInterface
 
     private function resolveDetailBySlug(string $slug): ?array
     {
-        foreach ($this->repository->getListCommands() as $cmd) {
-            $row = DB::table($cmd->target_table)
-                ->where($cmd->target_column, $slug)
-                ->first();
+        $meta = $this->repository->resolveSlug($slug);
 
-            if ($row) {
-                return $this->formatDetailResponse($cmd, $row, $slug);
-            }
+        if (!$meta) {
+            return null;
         }
 
-        return null;
+        $row = $this->repository->findBySlug(
+            $meta['table'],
+            $meta['column'],
+            $slug
+        );
+
+        if (!$row) {
+            return null;
+        }
+
+        $cmd = $this->repository->findById($meta['command_id']);
+
+        return $this->formatDetailResponse($cmd, $row, $slug);
     }
 
     private function formatDetailResponse(Command $cmd, object $row, string $slug): array
     {
-        $textFields = collect($cmd->fields)
+        $textFields = collect($cmd->fields ?? [])
             ->reject(fn ($f) => $f === 'photo')
             ->values()
             ->toArray();
@@ -101,16 +108,21 @@ class CommandService implements CommandServiceInterface
     }
 
     private function parseCommand(string $command): array
-    {
-        $parts = explode('/', ltrim($command, '/'));
-        return [$parts[0] ?? null, $parts[1] ?? null];
-    }
+     {
+         $command = trim($command, '/');
+         $parts = explode('/', $command, 2);
+         return [
+             $parts[0] ?? null,
+             $parts[1] ?? null
+         ];
+     }
 
     private function handleList(Command $cmd)
     {
-        $rows = DB::table($cmd->target_table)
-            ->select(['slug', 'name', $cmd->target_column])
-            ->get();
+        $rows = $this->repository->getListData(
+            $cmd->target_table,
+            $cmd->target_column
+        );
 
         $commands = $rows->map(fn ($row) => [
             'command' => '/' . $row->slug,

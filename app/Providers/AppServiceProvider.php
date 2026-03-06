@@ -6,8 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use App\Contracts\{CommandResolveServiceInterface,CommandServiceInterface};
 Use App\Repositories\CommandRepository;
 use App\Services\Command\CommandService;
-
-
+use App\Models\{Dosen,Staf,Command};
+use App\Observers\{DosenObserver,StafObserver,CommandObserver};
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,6 +29,9 @@ class AppServiceProvider extends ServiceProvider
     {
         if ($this->app->environment('production')) {
         \URL::forceScheme('https');
-    }
+        }
+        Command::observe(CommandObserver::class);
+        Dosen::observe(DosenObserver::class);
+        Staf::observe(StafObserver::class);
     }
 }

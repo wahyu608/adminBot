@@ -51,7 +51,6 @@ class ModelHelper
 
                     $table = $instance->getTable();
 
-                    // 🔴 FILTER KRUSIAL DI SINI
                     if (in_array($table, self::$excludedTables, true)) {
                         continue;
                     }
