@@ -27,7 +27,7 @@ class CommandForm
 
                     TextInput::make('command')
                         ->label('Nama Command')
-                        ->helperText('contoh : dosen, staf, jadwal_kuliah tanpa tanda "/"')
+                        ->helperText('contoh : dosen, staf, jadwal_kuliah, hanya huruf kecil.')
                         ->required()
                         ->rule('regex:/^[a-z0-9_]+$/')
                         ->unique(
