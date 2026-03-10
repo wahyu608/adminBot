@@ -5,7 +5,7 @@
     <button type="button"
         onclick="uploadToCloudinary(this)"
         class="px-4 py-2 bg-blue-600 text-white rounded">
-        Upload Foto ke Cloudinary
+        Upload Foto 
     </button>
 </div>
 
