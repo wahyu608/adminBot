@@ -21,9 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         'broadcasting/auth',
         ]);
         $middleware->trustProxies(
-        at: '*',
-        headers: Request::HEADER_X_FORWARDED_ALL
-        );
+        at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
