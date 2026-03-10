@@ -8,6 +8,7 @@ Use App\Repositories\CommandRepository;
 use App\Services\Command\CommandService;
 use App\Models\{Dosen,Staf,Command};
 use App\Observers\{DosenObserver,StafObserver,CommandObserver};
+use Illuminate\Support\Facades\Log;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,5 +34,11 @@ class AppServiceProvider extends ServiceProvider
         Command::observe(CommandObserver::class);
         Dosen::observe(DosenObserver::class);
         Staf::observe(StafObserver::class);
+        if (request()->is('admin/password-reset/reset*')) {
+        Log::info('current_url', [
+            'url' => url()->current(),
+            'full' => request()->fullUrl(),
+        ]);
+    }
     }
 }
