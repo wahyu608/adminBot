@@ -35,7 +35,6 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->profile()
             ->passwordReset()
-            
             ->brandName('Selamat Datang Admin')
             ->colors([
                 'primary' => Color::Amber,
