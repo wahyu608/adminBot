@@ -19,6 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
         'broadcasting/auth',
         ]);
+        $middleware->trustProxies(
+        at: '*',
+        headers: Request::HEADER_X_FORWARDED_ALL
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
