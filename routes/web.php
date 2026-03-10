@@ -7,6 +7,10 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 Route::get('/', function () {
     return redirect('admin/login');
 });
+Route::get('/login', function () {
+    return redirect('/admin/login');
+})->name('login');
+
 Route::get('/test-auth', function() {
     return auth()->user();
 });
