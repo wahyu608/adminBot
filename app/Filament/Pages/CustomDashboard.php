@@ -13,6 +13,11 @@ class CustomDashboard extends BaseDashboard
 {
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-home';
     
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->hasVerifiedEmail() ?? false;
+    }
+    
     public function getWidgets(): array
     {
         return [

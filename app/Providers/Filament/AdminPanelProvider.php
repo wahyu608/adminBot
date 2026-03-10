@@ -6,6 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use App\Http\Middleware\EnsureEmailVerifiedForPanel;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -32,7 +33,9 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->globalSearch(false)
             ->login()
-            ->emailVerification()
+            ->profile()
+            ->passwordReset()
+            
             ->brandName('Selamat Datang Admin')
             ->colors([
                 'primary' => Color::Amber,
@@ -69,6 +72,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                EnsureEmailVerifiedForPanel::class,
             ])
             ->databaseNotifications();
     }

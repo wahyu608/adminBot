@@ -26,6 +26,11 @@ class StafResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user';
     protected static ?int $navigationSort = 3;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->hasVerifiedEmail() ?? false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return StafForm::configure($schema);

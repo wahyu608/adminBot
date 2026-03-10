@@ -26,6 +26,10 @@ class CommandResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-command-line';
     protected static ?int $navigationSort = 1;
 
+    public static function shouldRegisterNavigation(): bool
+        {
+            return auth()->user()?->hasVerifiedEmail() ?? false;
+        }
 
     public static function form(Schema $schema): Schema
     {

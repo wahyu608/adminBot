@@ -23,9 +23,12 @@ class DosenResource extends Resource
     protected static ?string $navigationLabel = 'Dosen';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
     protected static ?int $navigationSort = 2;
-
-    
     protected static ?string $recordTitleAttribute = 'Dosen';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->hasVerifiedEmail() ?? false;
+    }
 
     public static function form(Schema $schema): Schema
     {
