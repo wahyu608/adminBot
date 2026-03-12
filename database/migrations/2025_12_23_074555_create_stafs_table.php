@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('position')->nullable();
-            $table->text('description')->nullable();
+            $table->text('student_academic_services')->nullable();
             $table->string('photo')->nullable();
             $table->timestamps();
         });

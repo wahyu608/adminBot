@@ -88,9 +88,31 @@ class CommandService implements CommandServiceInterface
 
     private function formatDetailResponse(Command $cmd, object $row, string $slug): array
     {
+        $fieldMap = [
+            'name' => 'nama',
+            'nidn' => 'nidn',
+            'email' => 'email',
+            'phone_number' => 'nomor_telepon',
+            'position' => 'jabatan',
+            'study_program' => 'program_studi',
+            'bio' => 'biografi',
+            'student_academic_services' => 'layanan_akademik_mahasiswa',
+        ];
+
         $textFields = collect($cmd->fields ?? [])
             ->reject(fn ($f) => $f === 'photo')
             ->values()
+            ->toArray();
+
+        $fields = collect($textFields)
+            ->map(fn ($field) => $fieldMap[$field] ?? $field)
+            ->toArray();
+
+        $data = collect($row)
+            ->only($textFields)
+            ->mapWithKeys(fn ($value, $key) => [
+                $fieldMap[$key] ?? $key => $value
+            ])
             ->toArray();
 
         return [
@@ -101,8 +123,8 @@ class CommandService implements CommandServiceInterface
                     ? $row->photo
                     : Storage::disk('cloudinary')->url($row->photo))
                 : null,
-            'data' => collect($row)->only($textFields)->toArray(),
-            'fields' => $textFields,
+            'data' => $data,
+            'fields' => $fields,
             'response' => $cmd->response,
         ];
     }

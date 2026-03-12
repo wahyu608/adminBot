@@ -20,7 +20,7 @@ class ColumnLabelHelper
             'department'    => 'Program Studi',
             'description'   => 'Deskripsi',
             'photo'         => 'Foto',
-            'slug'          => 'Kode',
+            'slug'          => 'Slug',
         ];
 
         return $map[$column]

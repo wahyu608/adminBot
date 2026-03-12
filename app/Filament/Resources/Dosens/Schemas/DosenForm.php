@@ -63,9 +63,9 @@ class DosenForm
                     TextInput::make('phone_number')
                         ->label('Nomor Telepon'),
 
-                    Textarea::make('description')
-                        ->label('Deskripsi Dosen')
-                        ->helperText('Deskripsi singkat untuk profil atau informasi tambahan')
+                    Textarea::make('bio')
+                        ->label('Biography')
+                        ->helperText('Deskripsi singkat tentang dosen, bidang keahlian, dan informasi relevan lainnya.')
                         ->columnSpanFull(),
                 ]),
 
