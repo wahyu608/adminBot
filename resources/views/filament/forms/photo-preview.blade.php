@@ -8,6 +8,6 @@
     </div>
 @else
     <div class="text-sm text-gray-500">
-        Belum ada foto yang diunggah.
+        Belum ada foto yang diupload
     </div>
 @endif

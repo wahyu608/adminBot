@@ -15,7 +15,7 @@ class Staf extends Model
         'email',
         'phone_number',
         'position',
-        'description',
+        'student_academic_services',
         'photo',
     ];
     protected static function booted()
