@@ -26,10 +26,23 @@ class CommandService implements CommandServiceInterface
     public function execute(string $command)
     {
         $command = strtolower(trim($command, '/'));
-        return Cache::rememberForever(
+
+        $result = Cache::rememberForever(
             "command:$command",
             fn () => $this->executeInternal($command)
         );
+
+        if (!$result) {
+            return [
+                'success' => false,
+                'error' => 'command_not_found'
+            ];
+        }
+
+        return [
+            'success' => true,
+            'data' => $result
+        ];
     }
 
     private function executeInternal(string $command)
@@ -47,7 +60,7 @@ class CommandService implements CommandServiceInterface
             return $detail;
         }
 
-        abort(404, 'Command not found');
+        return null;
     }
 
     private function executeCommand(Command $cmd, ?string $sub)
