@@ -18,7 +18,8 @@ class ColumnLabelHelper
             'study_program' => 'Program Studi',
             'faculty'       => 'Fakultas',
             'department'    => 'Program Studi',
-            'description'   => 'Deskripsi',
+            'student_academic_services' => 'Layanan Akademik Mahasiswa',
+            'bio'           => 'Biodata',
             'photo'         => 'Foto',
             'slug'          => 'Slug',
         ];

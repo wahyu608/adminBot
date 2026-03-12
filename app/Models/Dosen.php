@@ -16,7 +16,7 @@ class Dosen extends Model
         'phone_number',
         'position',
         'study_program',
-        'description',
+        'bio',
         'photo',
     ];
 
