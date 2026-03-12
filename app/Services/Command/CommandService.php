@@ -95,7 +95,7 @@ class CommandService implements CommandServiceInterface
             'phone_number' => 'nomor_telepon',
             'position' => 'jabatan',
             'study_program' => 'program_studi',
-            'bio' => 'biografi',
+            'bio' => 'bio',
             'student_academic_services' => 'layanan_akademik_mahasiswa',
         ];
 
