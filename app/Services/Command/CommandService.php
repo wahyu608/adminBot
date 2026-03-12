@@ -99,6 +99,8 @@ class CommandService implements CommandServiceInterface
             'student_academic_services' => 'layanan_akademik_mahasiswa',
         ];
 
+        dd($cmd->fields);
+
         $textFields = collect($cmd->fields ?? [])
             ->reject(fn ($f) => $f === 'photo')
             ->values()
