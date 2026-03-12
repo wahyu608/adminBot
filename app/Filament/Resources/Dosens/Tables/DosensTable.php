@@ -64,6 +64,10 @@ class DosensTable
                     ->label('No. Telepon')
                     ->toggleable(isToggledHiddenByDefault: true),
 
+                TextColumn::make('bio')
+                    ->label('Bio')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->dateTime('d M Y')

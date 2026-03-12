@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('phone_number')->nullable();
             $table->string('position')->nullable();
             $table->string('study_program')->nullable();
-            $table->text('description')->nullable();
+            $table->text('bio')->nullable();
             $table->string('photo')->nullable();
             $table->timestamps();
         });

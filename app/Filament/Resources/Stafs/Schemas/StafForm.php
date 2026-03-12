@@ -51,9 +51,9 @@ class StafForm
                         ->label('Nomor Telepon')
                         ->tel(),
 
-                    Textarea::make('description')
-                        ->label('Deskripsi Staf')
-                        ->helperText('Deskripsi singkat untuk profil atau informasi tambahan')
+                    Textarea::make('student_academic_services')
+                        ->label('Layanan Akademik Mahasiswa')
+                        ->helperText('Deskripsi singkat tentang layanan akademik yang diberikan oleh staf, seperti konsultasi akademik, bantuan administrasi, atau layanan lainnya.')
                         ->columnSpanFull(),
                 ]),
             Section::make('Media')
