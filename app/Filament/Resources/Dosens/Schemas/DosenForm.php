@@ -64,7 +64,7 @@ class DosenForm
                         ->label('Nomor Telepon'),
 
                     Textarea::make('bio')
-                        ->label('Biography')
+                        ->label('Biodata')
                         ->helperText('Deskripsi singkat tentang dosen, bidang keahlian, dan informasi relevan lainnya.')
                         ->columnSpanFull(),
                 ]),
