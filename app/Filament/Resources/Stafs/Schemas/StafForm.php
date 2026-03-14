@@ -33,12 +33,15 @@ class StafForm
 
                         
                         TextInput::make('position')
-                        ->label('Jabatan'),
+                            ->label('Jabatan'),
+
                         TextInput::make('slug')
-                            ->label('Slug')
-                            ->disabled()
-                            ->dehydrated(true),
-                ]),
+                            ->label('Slug Command')
+                            ->required()
+                            ->unique(ignoreRecord: true)
+                            ->regex('/^[a-z0-9-]+$/')
+                            ->helperText('Digunakan untuk command bot dan harus unik. Contoh: wahyu'),
+                    ]),
             Section::make('Kontak & Profil')
                 ->columns(2)
                 ->schema([

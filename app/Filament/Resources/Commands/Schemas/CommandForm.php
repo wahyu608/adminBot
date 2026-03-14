@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Commands\Schemas;
 
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\View;
 use Filament\Forms\Components\{
     TextInput,
     Toggle,
@@ -20,13 +21,11 @@ class CommandForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Informasi Command')
-                ->description('Identitas dan deskripsi dasar command bot')
-                ->columns(2)
+           Section::make('Informasi Command')
+                ->description('Detail utama command yang akan digunakan bot')
                 ->schema([
-
                     TextInput::make('command')
-                        ->label('Nama Command')
+                       ->label('Nama Command')
                         ->helperText('contoh : dosen, staf, jadwal_kuliah, hanya huruf kecil.')
                         ->required()
                         ->rule('regex:/^[a-z0-9_]+$/')
@@ -35,8 +34,9 @@ class CommandForm
                             column: 'command',
                             ignoreRecord: true
                         ),
+
                     TextInput::make('description')
-                        ->label('Deskripsi Command')
+                         ->label('Deskripsi Command')
                         ->helperText('Penjelasan singkat fungsi command')
                         ->required(),
 
@@ -47,16 +47,16 @@ class CommandForm
                             'list' => 'Daftar Data',
                         ])
                         ->default('text')
-                        ->required()
-                        ->reactive(),
+                        ->required(),
 
                     Toggle::make('status')
                         ->label('Status Command')
                         ->helperText('Aktifkan agar command dapat digunakan oleh bot')
                         ->default(true),
+
                 ]),
 
-            Section::make('Pesan Respon Bot')
+                Section::make('Respon Bot')
                 ->description('Pesan yang dikirim bot kepada pengguna')
                 ->schema([
 
@@ -70,63 +70,15 @@ class CommandForm
                         )
                         ->required(),
                 ]),
-
-            Section::make('Konfigurasi Data')
-                ->description('Pengaturan sumber data untuk command bertipe daftar')
+                Section::make('Media')
+                ->description('Foto atau media yang dikirim bot bersama respon (optional)')
                 ->schema([
-                    Select::make('target_table')
-                        ->label('Sumber Data (Tabel)')
-                        ->required(fn (callable $get) => $get('type') === 'list')
-                        ->options(ModelHelper::getModelList())
-                        ->searchable()
-                        ->placeholder('Pilih tabel sumber data')
-                        ->helperText('Data akan diambil dari tabel ini')
-                        ->reactive()
-                        ->afterStateUpdated(function (callable $set) {
-                            $set('target_column', 'slug');
-                        }),
-
-                    TextInput::make('target_column')
-                        ->label('Kolom Utama')
-                        ->required( fn (callable $get) => $get('type') === 'list')    
-                        ->helperText('Kolom referensi utama data (ditetapkan otomatis oleh sistem)')
-                        ->disabled()
-                        ->dehydrated(true)
-                        ->visible(function (callable $get) {
-                            $table = $get('target_table');
-                            if (!$table) return false;
-
-                            try {
-                                return in_array('slug', SchemaHelper::getColumnListing($table));
-                            } catch (\Throwable) {
-                                return false;
-                            }
-                        }),
-
-
-                    MultiSelect::make('fields')
-                        ->placeholder('Pilih informasi yang akan ditampilkan')
-                        ->label('informasi yang Ditampilkan')
-                        ->helperText('informasi data yang akan ditampilkan oleh bot')
-                        ->required(fn (callable $get) => $get('type') === 'list')
-                        ->columns(2)
-                        ->options(function (callable $get) {
-                            $table = $get('target_table');
-                            if (!$table) return [];
-
-                            try {
-                                return collect(SchemaHelper::getColumnListing($table))
-                                    ->reject(fn ($col) => in_array($col, ['id', 'created_at', 'updated_at']))
-                                    ->mapWithKeys(fn ($col) => [
-                                        $col => ColumnLabelHelper::translate($col)
-                                    ])
-                                    ->toArray();
-                            } catch (\Throwable) {
-                                return [];
-                            }
-                        })
-                ])
-                ->visible(fn (callable $get) => $get('type') === 'list'),
+                    TextInput::make('photo')
+                    ->readOnly(),
+                    View::make('filament.forms.photo-preview'),
+                    View::make('filament.forms.cloudinary-upload')
+                        ->visible(fn ($operation) => in_array($operation, ['create', 'edit'])),
+                                    ]),
         ]);
     }
 }

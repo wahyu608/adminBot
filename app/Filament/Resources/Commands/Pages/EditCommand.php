@@ -7,6 +7,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Facades\Cache;
+use App\Helpers\CloudinaryHelper;
 
 class EditCommand extends EditRecord
 {
@@ -17,9 +18,13 @@ class EditCommand extends EditRecord
         return [
             ViewAction::make(),
             DeleteAction::make()
-                ->after(fn () =>
-                    Cache::forget("command:{$this->record->command}")
-            ),
+            ->after(function () {
+                $record = $this->record;
+
+                if ($record && $record->photo) {
+                    CloudinaryHelper::deleteByUrl($record->photo);
+                }
+            }),
         ];
     }
 

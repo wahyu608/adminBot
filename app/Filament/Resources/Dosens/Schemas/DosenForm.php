@@ -29,13 +29,15 @@ class DosenForm
                         ->live(onBlur: true)
                         ->afterStateUpdated(
                             fn (callable $set, $state) =>
-                                $set('slug', Str::slug($state, '_')),
+                                $set('slug', Str::slug($state)),
                         ),
 
                     TextInput::make('slug')
-                        ->label('Slug')
-                        ->disabled()
-                        ->dehydrated(true),
+                        ->label('Slug Command')
+                        ->required()
+                        ->unique(ignoreRecord: true)
+                        ->regex('/^[a-z0-9-]+$/')
+                        ->helperText('Digunakan untuk command bot dan harus unik. Contoh: wahyu'),
 
                     TextInput::make('nidn')
                         ->label('NIDN')
