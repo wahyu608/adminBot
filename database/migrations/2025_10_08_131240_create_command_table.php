@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('target_table')->nullable();
             $table->string('target_column')->nullable();
             $table->json('fields')->nullable();
+            $table->string('photo')->nullable();
             $table->string('status');
             $table->timestamps();
         });

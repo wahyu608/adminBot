@@ -22,13 +22,19 @@ class DosenForm
                 ->description('Informasi utama dan identitas unik dosen')
                 ->columns(2)
                 ->schema([
-
                     TextInput::make('name')
                         ->label('Nama Dosen')
                         ->required(),
 
                     TextInput::make('slug')
-                        ->label('Slug'),
+                        ->label('Slug')
+                        ->unique(
+                            table: 'dosens',
+                            column: 'slug',
+                            ignoreRecord: true
+                        )
+                        ->helperText('URL identifier yang digunakan untuk detail dosen, contoh : wahyu'),
+
 
                     TextInput::make('nidn')
                         ->label('NIDN')

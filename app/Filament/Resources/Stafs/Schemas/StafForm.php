@@ -24,20 +24,19 @@ class StafForm
 
                     TextInput::make('name')
                         ->label('Nama Staf')
-                        ->required()
-                        ->live(onBlur: true)
-                        ->afterStateUpdated(
-                            fn (callable $set, $state) =>
-                                $set('slug', Str::slug($state, '_'))
-                        ),
+                        ->required(),
 
+                    TextInput::make('slug')
+                        ->label('Slug')
+                        ->unique(
+                            table: 'stafs',
+                            column: 'slug',
+                            ignoreRecord: true
+                        )
+                        ->helperText('URL identifier yang digunakan untuk detail staf, contoh : wahyu'),
                         
                         TextInput::make('position')
                         ->label('Jabatan'),
-                        TextInput::make('slug')
-                            ->label('Slug')
-                            ->disabled()
-                            ->dehydrated(true),
                 ]),
             Section::make('Kontak & Profil')
                 ->columns(2)

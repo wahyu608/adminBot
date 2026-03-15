@@ -15,6 +15,8 @@ use Filament\Tables\Columns\{
 };
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use App\Helpers\CloudinaryHelper;
+use Filament\Tables\Columns\ImageColumn;
 
 class CommandsTable
 {
@@ -24,7 +26,12 @@ class CommandsTable
             ->deferLoading()
 
             ->columns([
-
+                ImageColumn::make('photo')
+                    ->label('Foto')
+                    ->disk('cloudinary')
+                    ->circular()
+                    ->size(40)
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('command')
                     ->label('Command')
                     ->searchable()
@@ -97,6 +104,16 @@ class CommandsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->label('Hapus Terpilih')
+                        ->after(function ($records) {
+                            foreach ($records as $record) {
+                                if (!empty($record->photo)) {
+                                    \Log::info('Bulk deleting photo', [
+                                        'public_id' => $record->photo,
+                                    ]);
+                                    CloudinaryHelper::deleteByUrl($record->photo);
+                                }
+                            }
+                        })
                         ->requiresConfirmation(),
                 ]),
             ]);

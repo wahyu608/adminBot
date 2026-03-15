@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Commands\Schemas;
 
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\View;
 use Filament\Forms\Components\{
     TextInput,
     Toggle,
@@ -70,6 +71,15 @@ class CommandForm
                         )
                         ->required(),
                 ]),
+            Section::make('Media')
+                ->description('Foto yang dikirim bot bersama respon (optional)')
+                ->schema([
+                    TextInput::make('photo')
+                    ->readOnly(),
+                    View::make('filament.forms.photo-preview'),
+                    View::make('filament.forms.cloudinary-upload')
+                        ->visible(fn ($operation) => in_array($operation, ['create', 'edit'])),
+                                    ]),
 
             Section::make('Konfigurasi Data')
                 ->description('Pengaturan sumber data untuk command bertipe daftar')

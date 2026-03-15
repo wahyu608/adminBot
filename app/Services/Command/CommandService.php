@@ -177,6 +177,11 @@ class CommandService implements CommandServiceInterface
         return [
             'type' => 'text',
             'response' => $cmd->response ?? 'Belum ada respons diatur.',
+            'photo' => $cmd->photo
+                ? (str_starts_with($cmd->photo, 'http')
+                    ? $cmd->photo
+                    : Storage::disk('cloudinary')->url($cmd->photo))
+                : null
         ];
     }
 }
