@@ -167,7 +167,7 @@ class CommandService implements CommandServiceInterface
 
         return [
             'type' => 'list',
-            'title' => 'Daftar ' . ucfirst($title),
+            'title' => 'Daftar Informasi Yang Ditemukan :',
             'commands' => $commands,
         ];
     }
