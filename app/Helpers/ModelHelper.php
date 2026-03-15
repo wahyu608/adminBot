@@ -20,6 +20,12 @@ class ModelHelper
         'personal_access_tokens',
     ];
 
+    protected static array $labels = [
+    'schedules' => 'Jadwal Kuliah',
+    'dosens' => 'Dosen',
+    'staffs' => 'Staf',
+    ];
+
     /**
      * Ambil semua model dari folder app/Models
      * lalu kembalikan array: ['nama_tabel' => 'NamaModel']
@@ -55,7 +61,7 @@ class ModelHelper
                         continue;
                     }
 
-                    $models[$table] = $name;
+                    $models[$table] = self::$labels[$table] ?? $name;
 
                 } catch (\Throwable) {
                     continue;
