@@ -25,17 +25,10 @@ class DosenForm
 
                     TextInput::make('name')
                         ->label('Nama Dosen')
-                        ->required()
-                        ->live(onBlur: true)
-                        ->afterStateUpdated(
-                            fn (callable $set, $state) =>
-                                $set('slug', Str::slug($state, '_')),
-                        ),
+                        ->required(),
 
                     TextInput::make('slug')
-                        ->label('Slug')
-                        ->disabled()
-                        ->dehydrated(true),
+                        ->label('Slug'),
 
                     TextInput::make('nidn')
                         ->label('NIDN')
