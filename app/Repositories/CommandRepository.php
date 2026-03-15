@@ -79,11 +79,16 @@ class CommandRepository
                 $value  = $filter['value'] ?? null;
 
                 if ($column && $value !== null) {
+                    continue;
+                }
+                if ( is_array($value) ) {
+                    $query->whereIn($column, $value);
+                } else {
                     $query->where($column, $value);
                 }
             }
         }
-    return $query->get();
+        return $query->get();
     }
 }
 

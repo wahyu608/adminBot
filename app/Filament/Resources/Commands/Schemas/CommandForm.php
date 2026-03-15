@@ -150,13 +150,21 @@ class CommandForm
 
                                 if (!$table) return [];
 
+                                $filterableColumns = [
+                                    'dosens' => ['position','study_program'],
+                                    'stafs' => ['position'],
+                                    'schedules' => ['name'],
+                                ];
+
+                                $allowed = $filterableColumns[$table] ?? [];
+
                                 try {
-                                    return collect(SchemaHelper::getColumnListing($table))
-                                        ->reject(fn ($col) => in_array($col, ['id','slug','created_at','updated_at']))
+                                    return collect($allowed)
                                         ->mapWithKeys(fn ($col) => [
                                             $col => ColumnLabelHelper::translate($col)
                                         ])
                                         ->toArray();
+
                                 } catch (\Throwable) {
                                     return [];
                                 }
@@ -180,6 +188,7 @@ class CommandForm
                         Select::make('filter_value')
                             ->label('Nilai Filter')
                             ->helperText('Gunakan Filter jika ingin menampilkan data tertentu')
+                            ->multiple()
                             ->options(function (Get $get) {
 
                                 $table = $get('target_table');
@@ -215,16 +224,16 @@ class CommandForm
                             ->dehydrateStateUsing(function (Get $get) {
 
                                 $column = $get('filter_column');
-                                $value  = $get('filter_value');
+                                $values  = $get('filter_value');
 
-                                if (!$column || $value === null) {
+                                if (!$column || empty($values)) {
                                     return null;
                                 }
 
                                 return [
                                     [
                                         'column' => $column,
-                                        'value' => $value,
+                                        'value' => $values,
                                     ]
                                 ];
                             }),
