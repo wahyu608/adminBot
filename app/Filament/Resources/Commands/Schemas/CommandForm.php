@@ -143,8 +143,8 @@ class CommandForm
 
                         Select::make('filter_column')
                             ->label('Kolom Filter')
+                            ->helperText('Gunakan Filter jika ingin menampilkan data tertentu')
                             ->options(function (Get $get) {
-
                                 $table = $get('target_table');
 
                                 if (!$table) return [];
@@ -162,7 +162,19 @@ class CommandForm
                             })
                             ->searchable()
                             ->live()
-                            ->dehydrated(false),
+                            ->dehydrated(false)
+                            ->afterStateHydrated(function ($state, callable $set, $record) {
+
+                                if (!$record?->filters) {
+                                    return;
+                                }
+
+                                $filter = $record->filters[0] ?? null;
+
+                                if ($filter) {
+                                    $set('filter_column', $filter['column'] ?? null);
+                                }
+                            }),
 
                         Select::make('filter_value')
                             ->label('Nilai Filter')
@@ -184,7 +196,20 @@ class CommandForm
                                 }
                             })
                             ->searchable()
-                            ->dehydrated(false),
+                            ->dehydrated(false)
+                            ->afterStateHydrated(function ($state, callable $set, $record) {
+
+                                if (!$record?->filters) {
+                                    return;
+                                }
+
+                                $filter = $record->filters[0] ?? null;
+
+                                if ($filter) {
+                                    $set('filter_value', $filter['value'] ?? null);
+                                }
+                            }),
+
                         Hidden::make('filters')
                             ->dehydrateStateUsing(function (Get $get) {
 
