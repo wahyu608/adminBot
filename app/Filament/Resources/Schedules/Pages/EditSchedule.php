@@ -1,19 +1,21 @@
 <?php
 
-namespace App\Filament\Resources\Dosens\Pages;
+namespace App\Filament\Resources\Schedules\Pages;
 
-use App\Filament\Resources\Dosens\DosenResource;
-use Filament\Actions\{DeleteAction,ViewAction};
+use App\Filament\Resources\Schedules\ScheduleResource;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 use App\Helpers\CloudinaryHelper;
 
-class EditDosen extends EditRecord
+class EditSchedule extends EditRecord
 {
-    protected static string $resource = DosenResource::class;
+    protected static string $resource = ScheduleResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
+            ViewAction::make(),
             DeleteAction::make()
             ->after(function () {
                 $record = $this->record;
@@ -24,10 +26,12 @@ class EditDosen extends EditRecord
             }),
         ];
     }
+    
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('edit', ['record' => $this->record]);
     }
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $oldPhoto = $this->record->photo ?? null;

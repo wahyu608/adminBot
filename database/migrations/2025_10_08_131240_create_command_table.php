@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    protected $casts = [
+        'filters' => 'array',
+    ];
     /**
      * Run the migrations.
      */

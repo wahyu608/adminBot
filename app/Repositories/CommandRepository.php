@@ -31,7 +31,6 @@ class CommandRepository
                     ];
                 }
             }
-
             return $map;
         });
     }
@@ -69,12 +68,22 @@ class CommandRepository
             ->where($column, $slug)
             ->first();
     }
-    public function getListData(string $table, string $targetColumn)
-    {
-        return DB::table($table)
-            ->select(['slug', 'name', $targetColumn])
-            ->get();
-    }
+    public function getListData( string $table, string $targetColumn,  ?array $filters = null ) {
+        $columns = array_unique(['slug', 'name', $targetColumn]);
+        $query = DB::table($table)->select($columns);
 
+        if (!empty($filters)) {
+            foreach ($filters as $filter) {
+
+                $column = $filter['column'] ?? null;
+                $value  = $filter['value'] ?? null;
+
+                if ($column && $value !== null) {
+                    $query->where($column, $value);
+                }
+            }
+        }
+    return $query->get();
+    }
 }
 
