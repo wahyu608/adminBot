@@ -22,10 +22,5 @@ class Dosen extends Model
 
     protected function foto(): Attribute
     {
-        // return Attribute::make(
-        //     get: fn ($value) => $value 
-        //         ? \Storage::disk('cloudinary')->url($value)
-        //         : null,
-        // );
     }
 }

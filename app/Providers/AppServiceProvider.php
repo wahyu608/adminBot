@@ -31,8 +31,5 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('production')) {
         \URL::forceScheme('https');
         }
-        Command::observe(CommandObserver::class);
-        Dosen::observe(DosenObserver::class);
-        Staf::observe(StafObserver::class);
     }
 }
