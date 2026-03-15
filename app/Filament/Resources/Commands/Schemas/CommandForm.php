@@ -77,6 +77,7 @@ class CommandForm
                 ]),
             Section::make('Media')
                 ->description('Foto yang dikirim bot bersama respon (optional)')
+                ->visible(fn (callable $get) => $get('type') === 'text')  
                 ->schema([
                     TextInput::make('photo')
                     ->readOnly(),
