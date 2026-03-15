@@ -29,7 +29,7 @@ class SyncTelegramCommands implements ShouldQueue
     public function handle(): void
     {
         try {
-            $url = 'https://admin-bot-topaz.vercel.app/sync-commands';
+            $url = 'https://emilbot.vercel.app/sync-commands';
             $response = Http::timeout(30)->post($url);
 
             if ($response->successful()) {
