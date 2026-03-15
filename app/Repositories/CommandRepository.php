@@ -68,8 +68,10 @@ class CommandRepository
             ->where($column, $slug)
             ->first();
     }
-    public function getListData( string $table, string $targetColumn,  ?array $filters = null ) {
+    public function getListData(string $table, string $targetColumn, ?array $filters = null)
+    {
         $columns = array_unique(['slug', 'name', $targetColumn]);
+
         $query = DB::table($table)->select($columns);
 
         if (!empty($filters)) {
@@ -78,16 +80,18 @@ class CommandRepository
                 $column = $filter['column'] ?? null;
                 $value  = $filter['value'] ?? null;
 
-                if ($column && $value !== null) {
+                if (!$column || $value === null) {
                     continue;
                 }
-                if ( is_array($value) ) {
+
+                if (is_array($value)) {
                     $query->whereIn($column, $value);
                 } else {
                     $query->where($column, $value);
                 }
             }
         }
+
         return $query->get();
     }
 }
