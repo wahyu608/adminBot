@@ -166,6 +166,7 @@ class CommandForm
 
                         Select::make('filter_value')
                             ->label('Nilai Filter')
+                            ->helperText('Gunakan Filter jika ingin menampilkan data tertentu')
                             ->options(function (Get $get) {
 
                                 $table = $get('target_table');
