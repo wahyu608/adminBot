@@ -11,10 +11,14 @@ use Filament\Forms\Components\{
     Select,
     MultiSelect,
     Textarea,
+    Repeater,
+    Hidden,
 };
 use App\Helpers\ModelHelper;
 use App\Helpers\ColumnLabelHelper;
+use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Support\Facades\Schema as SchemaHelper;
+
 
 class CommandForm
 {
@@ -83,6 +87,7 @@ class CommandForm
 
             Section::make('Konfigurasi Data')
                 ->description('Pengaturan sumber data untuk command bertipe daftar')
+                ->visible(fn (callable $get) => $get('type') === 'list')        
                 ->schema([
                     Select::make('target_table')
                         ->label('Sumber Data (Tabel)')
@@ -126,7 +131,7 @@ class CommandForm
 
                             try {
                                 return collect(SchemaHelper::getColumnListing($table))
-                                    ->reject(fn ($col) => in_array($col, ['id', 'created_at', 'updated_at']))
+                                    ->reject(fn ($col) => in_array($col, ['id','slug', 'created_at', 'updated_at']))
                                     ->mapWithKeys(fn ($col) => [
                                         $col => ColumnLabelHelper::translate($col)
                                     ])
@@ -134,9 +139,69 @@ class CommandForm
                             } catch (\Throwable) {
                                 return [];
                             }
-                        })
-                ])
-                ->visible(fn (callable $get) => $get('type') === 'list'),
+                        }),
+
+                        Select::make('filter_column')
+                            ->label('Kolom Filter')
+                            ->options(function (Get $get) {
+
+                                $table = $get('target_table');
+
+                                if (!$table) return [];
+
+                                try {
+                                    return collect(SchemaHelper::getColumnListing($table))
+                                        ->reject(fn ($col) => in_array($col, ['id','slug','created_at','updated_at']))
+                                        ->mapWithKeys(fn ($col) => [
+                                            $col => ColumnLabelHelper::translate($col)
+                                        ])
+                                        ->toArray();
+                                } catch (\Throwable) {
+                                    return [];
+                                }
+                            })
+                            ->searchable()
+                            ->live()
+                            ->dehydrated(false),
+
+                        Select::make('filter_value')
+                            ->label('Nilai Filter')
+                            ->options(function (Get $get) {
+
+                                $table = $get('target_table');
+                                $column = $get('filter_column');
+
+                                if (!$table || !$column) return [];
+
+                                try {
+                                    return \DB::table($table)
+                                        ->distinct()
+                                        ->pluck($column, $column)
+                                        ->toArray();
+                                } catch (\Throwable) {
+                                    return [];
+                                }
+                            })
+                            ->searchable()
+                            ->dehydrated(false),
+                        Hidden::make('filters')
+                            ->dehydrateStateUsing(function (Get $get) {
+
+                                $column = $get('filter_column');
+                                $value  = $get('filter_value');
+
+                                if (!$column || $value === null) {
+                                    return null;
+                                }
+
+                                return [
+                                    [
+                                        'column' => $column,
+                                        'value' => $value,
+                                    ]
+                                ];
+                            }),
+                ]),
         ]);
     }
 }

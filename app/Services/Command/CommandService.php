@@ -5,6 +5,7 @@ namespace App\Services\Command;
 use App\Contracts\CommandServiceInterface;
 use App\Models\Command;
 use App\Repositories\CommandRepository;
+use App\Helpers\ColumnLabelHelper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -101,36 +102,25 @@ class CommandService implements CommandServiceInterface
 
     private function formatDetailResponse(Command $cmd, object $row, string $slug): array
     {
-        $fieldMap = [
-            'name' => 'nama',
-            'nidn' => 'nidn',
-            'email' => 'email',
-            'phone_number' => 'nomor_telepon',
-            'position' => 'jabatan',
-            'study_program' => 'program_studi',
-            'bio' => 'bio',
-            'student_academic_services' => 'layanan_akademik_mahasiswa',
-        ];
-
         $textFields = collect($cmd->fields ?? [])
             ->reject(fn ($f) => $f === 'photo')
             ->values()
             ->toArray();
 
         $fields = collect($textFields)
-            ->map(fn ($field) => $fieldMap[$field] ?? $field)
+            ->map(fn ($field) => ColumnLabelHelper::translate($field))
             ->toArray();
 
         $data = collect($row)
             ->only($textFields)
             ->mapWithKeys(fn ($value, $key) => [
-                $fieldMap[$key] ?? $key => $value
+                ColumnLabelHelper::translate($key) => $value
             ])
             ->toArray();
 
         return [
             'type' => 'detail',
-            'title' => $slug,
+            'title' => $row->name ?? $slug,
             'photo' => $row->photo
                 ? (str_starts_with($row->photo, 'http')
                     ? $row->photo
@@ -139,6 +129,8 @@ class CommandService implements CommandServiceInterface
             'data' => $data,
             'fields' => $fields,
             'response' => $cmd->response,
+            'back_command' => '/' . $cmd->command,
+            'has_back' => true
         ];
     }
 
@@ -154,20 +146,28 @@ class CommandService implements CommandServiceInterface
 
     private function handleList(Command $cmd)
     {
+        $titleMap = [
+            'schedules' => 'Jadwal Kuliah',
+            'dosens' => 'Dosen',
+            'staffs' => 'Staf',
+        ];
+
+        $title = $titleMap[$cmd->target_table] ?? $cmd->target_table;
+
         $rows = $this->repository->getListData(
             $cmd->target_table,
-            $cmd->target_column
+            $cmd->target_column,
+            $cmd->filters
         );
 
         $commands = $rows->map(fn ($row) => [
             'command' => '/' . $row->slug,
-            'name' => $row->name,
-            'description' => $row->{$cmd->target_column},
+            'name' => $row->name ?? $row->{$cmd->target_column},
         ]);
 
         return [
             'type' => 'list',
-            'title' => 'Daftar ' . ucfirst($cmd->target_table),
+            'title' => 'Daftar ' . ucfirst($title),
             'commands' => $commands,
         ];
     }

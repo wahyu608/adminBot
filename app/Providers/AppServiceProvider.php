@@ -6,8 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use App\Contracts\{CommandResolveServiceInterface,CommandServiceInterface};
 Use App\Repositories\CommandRepository;
 use App\Services\Command\CommandService;
-use App\Models\{Dosen,Staf,Command};
-use App\Observers\{DosenObserver,StafObserver,CommandObserver};
+use App\Models\{Dosen,Staf,Command,Schedule};
+use App\Observers\{DosenObserver,StafObserver,CommandObserver,ScheduleObserver};
 use Illuminate\Support\Facades\Log;
 
 class AppServiceProvider extends ServiceProvider
@@ -34,5 +34,6 @@ class AppServiceProvider extends ServiceProvider
         Command::observe(CommandObserver::class);
         Dosen::observe(DosenObserver::class);
         Staf::observe(StafObserver::class);
+        Schedule::observe(ScheduleObserver::class);
     }
 }
