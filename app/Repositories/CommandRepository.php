@@ -24,14 +24,14 @@ class CommandRepository
 
                 foreach ($rows as $row) {
 
-                    $key = $cmd->command . ':' . $row->slug;
-
-                    $map[$key] = [
-                        'table' => $cmd->target_table,
-                        'column' => $cmd->target_column,
-                        'command_id' => $cmd->id,
-                        'slug' => $row->slug
-                    ];
+                    // hanya set jika slug belum ada
+                    if (!isset($map[$row->slug])) {
+                        $map[$row->slug] = [
+                            'table' => $cmd->target_table,
+                            'column' => $cmd->target_column,
+                            'command_id' => $cmd->id
+                        ];
+                    }
                 }
             }
 
