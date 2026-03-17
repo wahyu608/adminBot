@@ -38,13 +38,11 @@ class CommandRepository
             return $map;
         });
     }
-    public function resolveSlug(string $slug, string $command): ?array
+    public function resolveSlug(string $slug): ?array
     {
         $index = $this->getSlugIndex();
 
-        $key = $command . ':' . $slug;
-
-        return $index[$key] ?? null;
+        return $index[$slug] ?? null;
     }
     public function findById(int $id): ?Command
     {
