@@ -57,7 +57,7 @@ class CommandService implements CommandServiceInterface
         }
 
         // sebagai slug detail
-        if ($detail = $this->resolveDetailBySlug($prefix)) {
+       if ($detail = $this->resolveDetailBySlug($prefix, $command)) {
             return $detail;
         }
 
@@ -77,9 +77,9 @@ class CommandService implements CommandServiceInterface
         };
     }
 
-    private function resolveDetailBySlug(string $slug): ?array
+    private function resolveDetailBySlug(string $slug, string $command): ?array
     {
-        $meta = $this->repository->resolveSlug($slug);
+        $meta = $this->repository->resolveSlug($slug, $command);
 
         if (!$meta) {
             return null;

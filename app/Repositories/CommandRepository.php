@@ -24,21 +24,27 @@ class CommandRepository
 
                 foreach ($rows as $row) {
 
-                    $map[$row->slug] = [
+                    $key = $cmd->command . ':' . $row->slug;
+
+                    $map[$key] = [
                         'table' => $cmd->target_table,
                         'column' => $cmd->target_column,
-                        'command_id' => $cmd->id
+                        'command_id' => $cmd->id,
+                        'slug' => $row->slug
                     ];
                 }
             }
+
             return $map;
         });
     }
-    public function resolveSlug(string $slug): ?array
+    public function resolveSlug(string $slug, string $command): ?array
     {
         $index = $this->getSlugIndex();
 
-        return $index[$slug] ?? null;
+        $key = $command . ':' . $slug;
+
+        return $index[$key] ?? null;
     }
     public function findById(int $id): ?Command
     {
